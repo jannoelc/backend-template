@@ -93,6 +93,14 @@ AUTHENTICATION_BACKENDS = [
 
 HEADLESS_ONLY = True
 
+HEADLESS_FRONTEND_URLS = {
+    "account_confirm_email": "https://localhost:3000/auth/verify-email/{key}",
+    "account_reset_password": "https://localhost:3000/auth/password/reset",
+    "account_reset_password_from_key": "https://localhost:3000/auth/password/reset/key/{key}",
+    "account_signup": "https://localhost:3000/auth/signup",
+    "socialaccount_login_error": "https://localhost:3000/auth/provider/callback",
+}
+
 # PASSWORDS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
@@ -120,7 +128,6 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
@@ -144,7 +151,7 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#dirs
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         # https://docs.djangoproject.com/en/dev/ref/settings/#app-dirs
         "APP_DIRS": True,
         "OPTIONS": {

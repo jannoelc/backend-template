@@ -48,11 +48,11 @@ INSTALLED_APPS += ["django_extensions"]
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
 HEADLESS_FRONTEND_URLS = {
-    "account_confirm_email": "http://localhost:3000/account/verify-email/{key}",
-    "account_reset_password": "http://localhost:3000/account/password/reset",
-    "account_reset_password_from_key": "http://localhost:3000/account/password/reset/key/{key}",
-    "account_signup": "http://localhost:3000/account/signup",
-    "socialaccount_login_error": "http://localhost:3000/account/provider/callback",
+    "account_confirm_email": "https://localhost:3000/auth/verify-email/{key}",
+    "account_reset_password": "https://localhost:3000/auth/password/reset",
+    "account_reset_password_from_key": "https://localhost:3000/auth/password/reset/key/{key}",
+    "account_signup": "https://localhost:3000/auth/signup",
+    "socialaccount_login_error": "https://localhost:3000/auth/provider/callback",
 }
 
 HEADLESS_SERVE_SPECIFICATION = True
