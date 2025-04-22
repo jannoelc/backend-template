@@ -101,7 +101,8 @@ HEADLESS_FRONTEND_URLS = {
     "account_signup": "https://localhost:5000/auth/signup",
     "socialaccount_login_error": "https://localhost:5000/auth/provider/callback",
 }
-
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*']
 CORS_ALLOW_CREDENTIALS = True
 
 # PASSWORDS
