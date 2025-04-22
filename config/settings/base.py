@@ -94,11 +94,11 @@ AUTHENTICATION_BACKENDS = [
 HEADLESS_ONLY = True
 
 HEADLESS_FRONTEND_URLS = {
-    "account_confirm_email": "https://localhost:3000/auth/verify-email/{key}",
-    "account_reset_password": "https://localhost:3000/auth/password/reset",
-    "account_reset_password_from_key": "https://localhost:3000/auth/password/reset/key/{key}",
-    "account_signup": "https://localhost:3000/auth/signup",
-    "socialaccount_login_error": "https://localhost:3000/auth/provider/callback",
+    "account_confirm_email": "https://localhost:5000/auth/verify-email/{key}",
+    "account_reset_password": "https://localhost:5000/auth/password/reset",
+    "account_reset_password_from_key": "https://localhost:5000/auth/password/reset/key/{key}",
+    "account_signup": "https://localhost:5000/auth/signup",
+    "socialaccount_login_error": "https://localhost:5000/auth/provider/callback",
 }
 
 # PASSWORDS
