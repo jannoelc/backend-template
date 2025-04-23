@@ -1,61 +1,158 @@
-# backend
+# Seafair Backend Exam
 
-Seafair exam backend
+This is a headless Django app that serves as the backend for [seafair-exam-frontend](https://github.com/jannoelc/seafair-exam-frontend).
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+## Built With
+
+- [Django](https://docs.djangoproject.com/en/5.2/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [Django All Auth](https://docs.allauth.org/en/latest/)
+- [PostgreSQL](https://www.postgresql.org/) (though this should work with any database supported by Django ORM)
+
+## Setup
+
+This repository was initially built with the [Cookiecutter Django](https://cookiecutter-django.readthedocs.io/en/latest/) template, so most of the documentation there also applies to this project.
+
+### Running Locally with Docker (Preferred)
+
+This is the preferred approach since you can get started in seconds as long as you have Docker installed.
+
+**Requirements:**
+
+- Docker
+- [Just](https://github.com/casey/just) (optional)
+
+The instructions below assume that you have installed `Just`. It is a convenient way to run commands instead of always typing `docker compose -f docker-compose.local.yml`. If not, use the `justfile` in the root directory as a reference.
+
+1. Assuming you are in the root folder, run the command below. This will install all the pip dependencies and build the base Docker image:
+
+   ```bash
+   just build
+   ```
+
+2. Run the migration scripts:
+
+   ```bash
+   just manage migrate
+   ```
+
+3. Run the Docker Compose stack. The Django Dockerfile includes a file watcher, so any changes made to the code will automatically restart the Django app:
+
+   ```bash
+   just up
+   ```
+
+4. You may view the logs in real time by running:
+
+   ```bash
+   just logs <app_name or leave blank to view all>
+   ```
+
+To stop the Docker Compose stack, run:
+
+```bash
+just down
+```
+
+To delete the entire stack (e.g., if there are issues with database data, migrations, or builds), run:
+
+```bash
+just prune
+```
+
+#### Caveat
+
+Currently, there is no way to install dependencies via `pip install`. As a workaround, add the dependency to `requirements.txt` and run `just build`.
+
+### Running Locally
+
+_Support for this is limited for now. The steps for running this locally have not been fully verified compared to the Docker-based version._
+
+See the documentation on running this locally [here](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally.html). Skip the parts on generating a new project.
+
+## Migrations
+
+For running migrations, see the [Django migrations documentation](https://docs.djangoproject.com/en/5.2/topics/migrations).
+
+If you are developing locally with Docker, replace `python manage.py` with `just manage`:
+
+```bash
+just manage migrate
+just manage makemigrations
+just manage sqlmigrate
+just manage showmigrations
+```
 
 ## Settings
 
-Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getting-started/settings.html).
+Settings are segregated into the following files:
 
-## Basic Commands
+- `config/settings/base.py` - Common settings
+- `config/settings/local.py` - Local-only settings
+- `config/settings/test.py` - Test-only settings
+- `config/settings/prod.py` - TODO
 
-### Setting Up Your Users
+### Environment Variables
 
-- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+Only local environment files are available for now in `.env/.local/*`.
 
-- To create a **superuser account**, use this command:
+## Dev Tools
 
-      $ python manage.py createsuperuser
+### PG Admin
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+PG Admin is included in the Docker Compose stack, although you have to manually get the host and port of your Postgres Docker instance using the commands below:
 
-### Type checks
+1. Get the list of Docker networks:
 
-Running type checks with mypy:
+   ```bash
+   docker network ls
+   ```
 
-    $ mypy apps
+2. Look for the ID of the Docker network that matches your stack, and view its details:
 
-### Test coverage
+   ```bash
+   docker network inspect <name or ID>
+   ```
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
+3. Look for the entry for `apps_local_postgres` and use the IP address as the host, and `5432` as the port.
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+### Mailpit
 
-#### Running tests with pytest
+In development, it is often useful to see emails sent from your application. For that reason, the local SMTP server [Mailpit](https://github.com/axllent/mailpit) with a web interface is available as a Docker container.
 
-    $ pytest
+The Mailpit container will start automatically when you run all Docker containers. Please check the [Cookiecutter Django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally-docker.html) for more details on how to start all containers.
 
-### Live reloading and Sass CSS compilation
+With Mailpit running, to view messages sent by your application, open your browser and go to `http://localhost:8025`.
 
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally.html#using-webpack-or-gulp).
+### Swagger/OpenAPI
 
-### Email Server
+While the application is running, Swagger/OpenAPI documentation is available at:
 
-In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server [Mailpit](https://github.com/axllent/mailpit) with a web interface is available as docker container.
+| Service         | Documentation URL                     |
+|------------------|---------------------------------------|
+| Authentication  | `http://localhost:8000/api/auth/openapi.html` |
+| Backend         | `http://localhost:8000/api/docs/`     |
 
-Container mailpit will start automatically when you will run all docker containers.
-Please check [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/2-local-development/developing-locally-docker.html) for more details how to start all containers.
+Unfortunately, due to CSRF and cookie implementation, the backend Swagger page cannot be used directly yet without turning off a couple of settings.
 
-With Mailpit running, to view messages that are sent by your application, open your browser and go to `http://127.0.0.1:8025`
+**TODO:** Expose a setting or an environment variable to disable cookie session IDs and CSRF tokens when working locally.
 
-## Deployment
+## Architectural Choices
 
-The following details how to deploy this application.
+### Authentication
 
-### Docker
+This project leverages the well-established [Django All Auth](https://docs.allauth.org/en/latest/) library for authentication. Key benefits include:
 
-See detailed [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/3-deployment/deployment-with-docker.html).
+- **Reduced Development Time**: By using a pre-built library, developers can focus on core application features instead of building authentication from scratch.
+- **Enhanced Security**: Django All Auth is widely adopted and actively maintained, ensuring adherence to robust security practices.
+- **Extensibility**: It supports multiple authentication methods, including social logins, making it easy to expand functionality as the project grows.
+
+### Backend Architecture
+
+The project is built using Django and Django REST Framework, which provide a solid foundation for rapid development and maintainability. Key advantages include:
+
+- **Rapid Prototyping**: Django's built-in ORM and admin interface simplify database management and accelerate development.
+- **REST API Support**: Django REST Framework offers powerful tools like serializers, viewsets, and built-in authentication, streamlining the creation of RESTful APIs.
+- **Modular Design**: The app-based structure of Django promotes separation of concerns, making the codebase easier to maintain and scale.
