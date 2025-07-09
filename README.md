@@ -1,6 +1,6 @@
-# Seafair Backend Exam
+# Backend Template
 
-This is a headless Django app that serves as the backend for [seafair-exam-frontend](https://github.com/jannoelc/seafair-exam-frontend).
+This is a headless Django app that serves as the backend for [frontend-template](https://github.com/jannoelc/frontend-template).
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 
